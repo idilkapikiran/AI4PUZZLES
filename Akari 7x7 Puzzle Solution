@@ -1,0 +1,28 @@
+#const n=7.
+row(1..n).
+col(1..n).
+num(0..4).%gerekli mi
+num(e).
+%black(number, X, Y).
+%n=7
+black(e, 1 ,3). black(e, 1,7).  black(4,2,2). black(1,2,5). black(e,2,7). black(2,3,4). black(e, 4,2). black(e, 4, 6). black(e, 5, 4). black(e, 6,1). black(e, 6,3).
+black(1, 6,6). black(1,7,1). black(1,7,5).
+
+white(X, Y):- not black(_,X,Y), row(X), col(Y). %black ones shouldn't be same as white ones
+0{lightbulb(X, Y)}1 :- white(X, Y). %there are lightbulbs in every white cell 
+%there can be lightbulb or 
+
+:-lightbulb(X,Y),lightbulb(X,Y1), {black (_,X,Y2):  Y < Y2, Y2 < Y1}<=0, Y < Y1. %if there are two lightbulbs in a row or column, there should be a black between them
+
+:-lightbulb(X,Y),lightbulb(X1,Y), {black (_,X2,Y):  X < X2, X2 < X1}<=0, X < X1. %iki lightbulb arasında black olmalı
+
+% There should be number of lightbulb which is inside of black squares. 
+%siyahların üzerindeki sayılar kadar çevrelerine lightbulb koy
+:-black(N,X,Y), {lightbulb(X+1,Y); lightbulb(X-1,Y); lightbulb(X,Y+1); lightbulb(X,Y-1)} != N, N != e, num(N).
+
+light(X, Y1) :- lightbulb(X, Y), white(X, Y1), Y1 >= Y, {black(_, X, Y2): Y < Y2, Y2 < Y1}==0.
+light(X, Y1) :- lightbulb(X, Y), white(X, Y1), Y1 <= Y, {black(_, X, Y2): Y > Y2, Y2 > Y1}==0.
+light(X1, Y) :- lightbulb(X, Y), white(X1, Y), X1 >= X, {black(_, X2, Y): X < X2, X2 < X1}==0.
+light(X1, Y) :- lightbulb(X, Y), white(X1, Y), X1 <= X, {black(_, X2, Y): X > X2, X2 > X1}==0.
+:- not light(X, Y), white(X, Y). % if white and not light, eliminate
+#show lightbulb/2.
